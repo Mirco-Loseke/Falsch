@@ -105,7 +105,7 @@ input[type=color]::-webkit-color-swatch{border:none;border-radius:7px;}
 </style>
 </head>
 <body>
-<div id="fb-debug" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1a1a1a;color:#0f0;font-family:monospace;font-size:12px;padding:8px;z-index:9999;max-height:120px;overflow-y:auto;border-top:2px solid #333;"></div>
+<div id="fb-debug" style="display:block;position:fixed;bottom:0;left:0;right:0;background:#1a1a1a;color:#0f0;font-family:monospace;font-size:12px;padding:8px;z-index:9999;max-height:120px;overflow-y:auto;border-top:2px solid #333;"></div>
 <div id="root"></div>
 <script>
   const dbg = (msg, color) => {
@@ -404,7 +404,7 @@ function FitForge(){
           const unsub = window.firebaseOnSnapshot(ref, (snap) => {
             if (cancelled) return;
             
-            if (snap.exists()) {
+            if (snap.exists) {
               const cloudVal = snap.data().value;
               const cloudStr = JSON.stringify(cloudVal);
               
