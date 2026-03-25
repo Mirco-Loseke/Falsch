@@ -616,7 +616,7 @@ function FitForge(){
   const showToast=(msg,type="success")=>{setToast({msg,type});setTimeout(()=>setToast(null),3500);};
   const p=n=>String(n).padStart(2,"0");
   const WN=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
-  const clkStr=WN[clk.getDay()]+" "+p(clk.getDate())+"."+p(clk.getMonth()+1)+"."+clk.getFullYear()+" "+p(clk.getHours())+":"+p(clk.getMinutes())+":"+p(clk.getSeconds());
+  const clkStr=WN[clk.getDay()]+" "+p(clk.getDate())+"."+p(clk.getMonth()+1)+"."+clk.getFullYear()+" | "+p(clk.getHours())+":"+p(clk.getMinutes())+":"+p(clk.getSeconds());
   const closeAll=()=>{setProfileOpen(false);setNotifOpen(false);};
   const totalVol=data.workouts.reduce((a,w)=>a+w.exercises.reduce((b,e)=>b+e.sets.reduce((c,s)=>c+s.weight*s.reps,0),0),0);
   const thisWeek=data.workouts.filter(w=>new Date(w.date)>=new Date(Date.now()-7*864e5));
