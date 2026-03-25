@@ -146,16 +146,18 @@ const fbGet = async (key, fallback) => {
   try {
     const uid = getUid();
     if (window.firebaseDb && uid) {
-      const snap = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDb, "users", uid, "fitforge", key));
+      // Adjusted path to match user's Firestore rules: fitforge/{uid}_{key}
+      const snap = await window.firebaseGetDoc(window.firebaseDoc(window.firebaseDb, "fitforge", `${uid}_${key}`));
       if (snap.exists()) {
         const val = snap.data().value;
-        localStorage.setItem("ff_" + key, JSON.stringify(val)); // Sync to local
+        localStorage.setItem("ff_" + key, JSON.stringify(val));
         return val;
       }
     }
     const r = localStorage.getItem("ff_" + key);
     return r ? JSON.parse(r) : fallback;
-  } catch {
+  } catch (e) {
+    if(window.dbg) dbg(`❌ fbGet Fehler (${key}): ${e.message}`, '#f55');
     try { const r = localStorage.getItem("ff_" + key); return r ? JSON.parse(r) : fallback; } catch { return fallback; }
   }
 };
@@ -165,9 +167,13 @@ const fbSet = async (key, value) => {
     localStorage.setItem("ff_" + key, JSON.stringify(value));
     const uid = getUid();
     if (window.firebaseDb && uid) {
-      await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDb, "users", uid, "fitforge", key), { value });
+      // Adjusted path to match user's Firestore rules: fitforge/{uid}_{key}
+      await window.firebaseSetDoc(window.firebaseDoc(window.firebaseDb, "fitforge", `${uid}_${key}`), { value });
     }
-  } catch(e) { console.error("fbSet error:", e); }
+  } catch(e) { 
+    console.error("fbSet error:", e);
+    if(window.dbg) dbg(`❌ Cloud-Speicher Fehler: ${e.message}. Prüfe deine Firebase-Regeln!`, '#f55');
+  }
 };
 
 // Firebase Storage upload – returns download URL (falls back to base64)
@@ -194,7 +200,7 @@ const deleteFromStorage = async (path) => {
   try {
     const uid = getUid();
     if (!window.firebaseStorage || !uid) return;
-    const storageRef = window.firebaseRef(window.firebaseStorage, `users/${uid}/${path}`);
+    const storageRef = window.firebaseRef(window.firebaseStorage, `fitforge/${uid}/${path}`);
     await window.firebaseDeleteObject(storageRef);
   } catch(e) { console.warn("deleteFromStorage:", e.message); }
 };
@@ -393,7 +399,8 @@ function FitForge(){
         let pendingInitial = syncKeys.length;
 
         syncKeys.forEach(({ key, setter, df }) => {
-          const ref = window.firebaseDoc(window.firebaseDb, "users", uid, "fitforge", key);
+          // Flattened path to match your Firestore rules: fitforge/{uid}_{key}
+          const ref = window.firebaseDoc(window.firebaseDb, "fitforge", `${uid}_${key}`);
           const unsub = window.firebaseOnSnapshot(ref, (snap) => {
             if (cancelled) return;
             
@@ -401,18 +408,14 @@ function FitForge(){
               const cloudVal = snap.data().value;
               const cloudStr = JSON.stringify(cloudVal);
               
-              // Only update state if cloud data differs from current local state
-              // This is crucial to prevent "echo" loops and UI jitter
               if (cloudStr !== lastSyncRef.current[key]) {
-                if (window.dbg && !lastSyncRef.current[key]) dbg(`📥 ${key} geladen`, '#0ff');
+                if (window.dbg && !lastSyncRef.current[key]) dbg(`📥 ${key} aus Cloud geladen`, '#0ff');
                 localStorage.setItem("ff_" + key, cloudStr);
                 lastSyncRef.current[key] = cloudStr;
                 setter(cloudVal);
               }
             } else {
-              if (window.dbg) dbg(`ℹ️ ${key} neu/leer auf Cloud`, '#aaa');
-              // If not found in cloud, we keep what's in LocalStorage (set via useState init)
-              // and it will be pushed to cloud automatically once loaded=true
+              if (window.dbg) dbg(`ℹ️ ${key} noch nicht in Cloud vorhanden`, '#aaa');
             }
 
             pendingInitial--;
