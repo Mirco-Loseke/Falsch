@@ -713,11 +713,12 @@ function FitForge(){
       </aside>
       <main style={{...s.main, marginLeft: isMobile ? 0 : 236}}>
         <div style={s.topBar}>
-          <div style={{display:"flex",alignItems:"center",gap:12}}>
-            {isMobile && <button style={{...s.iconCircle, border:"none", background:"transparent", color:"#F0EDE8"}} onClick={()=>setSidebarOpen(o=>!o)}>{sidebarOpen ? IC.x : IC.menu}</button>}
-            <div style={s.topGreet}>{user.firstName?`Hey, ${user.firstName}! 👋`:"Hey, Athlet! 👋"}</div>
+          <div style={{display:"flex",alignItems:"center",gap:12, flex: 1, minWidth: 0}}>
+            {isMobile && <button style={{...s.iconCircle, border:"none", background:"transparent", color:"#F0EDE8", flexShrink: 0}} onClick={()=>setSidebarOpen(o=>!o)}>{sidebarOpen ? IC.x : IC.menu}</button>}
+            <div style={{...s.topGreet, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis", minWidth: 0}}>{user.firstName?`Hey, ${user.firstName}! 👋`:"Hey, Athlet! 👋"}</div>
           </div>
-          <div style={{display:"flex",alignItems:"center",gap:12}}><span style={{fontSize:13,fontWeight:600,color:"#F0EDE8"}}>{clkStr}</span>
+          <div style={{display:"flex",alignItems:"center",gap:12, flexShrink: 0}}>
+            {!isMobile && <span style={{fontSize:13,fontWeight:600,color:"#F0EDE8",whiteSpace:"nowrap"}}>{clkStr}</span>}
             <div style={{position:"relative"}}>
               <button className="iconBtn" style={{...s.iconCircle,...(notifOpen?s.iconOn:{})}} onClick={()=>{setNotifOpen(o=>!o);setProfileOpen(false);}}>
                 {IC.bell}{unread>0&&<span style={s.badge}>{unread}</span>}
@@ -1898,13 +1899,20 @@ function LogWorkout({data,setData,notify,prs,onSavePR,library,activeWorkout,setA
       {/* STEP 2 - Training mit Timer */}
       {step===2&&<div className="fadeIn">
         {/* Timer */}
-        <div style={{textAlign:"center",marginBottom:22,padding:"10px 20px",background:"#0D0D0F",borderRadius:16,border:"1px solid #1E1E24",display:"flex",alignItems:"center",justifyContent:"center",position:"relative",minHeight:64}}>
-          <div style={{fontFamily:"'Syne',sans-serif",fontSize:38,fontWeight:800,color:"#FF6B35",letterSpacing:2,lineHeight:1}}>
-            {fmtTimer(timer)}
+        <div 
+          style={{marginBottom:22,padding:"10px 20px",background:"#0D0D0F",borderRadius:16,border:"1px solid #1E1E24",display:"flex",alignItems:"center",justifyContent:"center",minHeight:64,cursor:"pointer"}}
+          onClick={()=>setRunning(r=>!r)}
+        >
+          <div style={{display:"flex",alignItems:"center",gap:12}}>
+            <div style={{fontFamily:"'Syne',sans-serif",fontSize:38,fontWeight:800,color:"#FF6B35",letterSpacing:2,lineHeight:1}}>
+              {fmtTimer(timer)}
+            </div>
+            <div style={{color:"#FF6B35",display:"flex",alignItems:"center",justifyContent:"center",fontSize:38}}>
+              {running 
+                ? <svg width="0.8em" height="0.8em" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                : <svg width="0.8em" height="0.8em" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>}
+            </div>
           </div>
-          <button style={{...s.primaryBtn,background:running?"#EF476F":"#06D6A0",padding:"10px 18px",fontSize:16,position:"absolute",right:10,width:"auto"}} onClick={()=>setRunning(r=>!r)}>
-            {running?"⏸":"▶"}
-          </button>
         </div>
 
         {curExData&&<div style={{fontFamily:"'Syne',sans-serif",fontSize:24,fontWeight:800,color:"#fff",marginBottom:12,paddingLeft:4}}>
