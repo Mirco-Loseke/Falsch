@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  background: #0D0D0F;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111114;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2A2A30;
+  border-radius: 3px;
+}
+
+.pageEnter {
+  animation: pageEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fadeIn {
+  animation: fadeIn 0.3s ease both;
+}
+
+.dropIn {
+  animation: dropIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.statCard {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.statCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+.planCard {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.planCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+}
+
+.histCard {
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.histCard:hover {
+  background: #161618 !important;
+  border-color: #2A2A30 !important;
+}
+
+.recentCard {
+  transition: background 0.15s;
+  cursor: pointer;
+}
+
+.recentCard:hover {
+  background: #161618 !important;
+}
+
+.notifRow:hover {
+  background: #1E1E22 !important;
+}
+
+.avCircle:hover .avOverlay {
+  opacity: 1 !important;
+}
+
+.iconBtn:hover {
+  background: #252528 !important;
+  color: #F0EDE8 !important;
+}
+
+.markAllBtn {
+  background: transparent;
+  border: none;
+  color: #FF6B35;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.profEditBtn:hover {
+  color: #F0EDE8 !important;
+}
+
+.cardIconBtn:hover {
+  background: #1A1A1F !important;
+  color: #F0EDE8 !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #FF6B35 !important;
+  outline: none;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+@media (max-width: 768px) {
+  .pageTitle { font-size: 24px !important; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
